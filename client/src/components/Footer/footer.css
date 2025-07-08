@@ -1,0 +1,35 @@
+/* Footer Styles */
+
+.footer-container {
+    background: var(--tertiary-color);
+    color: var(--primary-color);
+    padding: 2rem 0 1.5rem 0;
+    text-align: center;
+    border-top: 1px solid #e0e0e0;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.footer-title {
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+
+.footer-caption {
+    font-size: 1.3rem;
+    color: var(--secondary-color);
+    margin-bottom: 0.2rem;
+}
+
+.footer-est {
+    font-size: 1.1rem;
+    color: #888;
+    letter-spacing: 0.1em;
+}
