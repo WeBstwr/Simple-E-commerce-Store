@@ -3,6 +3,11 @@
     color: #fff;
     padding: 1.5rem 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
 }
 
 .header-nav {
@@ -56,4 +61,10 @@
 .account-link {
     margin-left: 1.5rem;
     font-weight: 700;
+}
+
+/* Add this class to your main content wrapper (e.g., in App.jsx or page components) */
+.main-content-with-header {
+    padding-top: 80px;
+    /* Adjust if your header height changes */
 }

@@ -11,11 +11,13 @@ function App() {
     <>
       <BrowserRouter>
         <Header />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-        </Routes>
-        <Footer />
+        <div className="main-content-with-header">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/about" element={<About />} />
+          </Routes>
+          <Footer />
+        </div>
       </BrowserRouter>
     </>
   )
