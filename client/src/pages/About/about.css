@@ -1,0 +1,61 @@
+/* About Page Styles */
+
+.about-container {
+    max-width: 900px;
+    margin: 3rem auto;
+    padding: 2rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+.about-section {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--tertiary-color);
+}
+
+.about-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.about-section h2 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 0.7rem;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.about-section p,
+.about-section ul,
+.about-section blockquote {
+    font-size: 1.3rem;
+    color: #444;
+    margin-bottom: 0.5rem;
+}
+
+.about-section ul {
+    padding-left: 1.5rem;
+}
+
+.about-section blockquote {
+    font-style: italic;
+    color: var(--secondary-color);
+    border-left: 3px solid var(--secondary-color);
+    padding-left: 1rem;
+    margin: 0.5rem 0;
+}
+
+.about-quick-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    margin: 0 0.5rem;
+    font-weight: 600;
+    transition: color 0.2s;
+}
+
+.about-quick-links a:hover {
+    color: var(--secondary-color);
+}
