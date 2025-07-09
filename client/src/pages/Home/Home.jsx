@@ -1,5 +1,12 @@
 import React from 'react'
+import products from '../../data/products';
 import './home.css'
+
+const featured = [
+  products.find(p => p.category === "Apparels"),
+  products.find(p => p.category === "T-shirts"),
+  products.find(p => p.category === "Sunglasses")
+];
 
 const Home = () => {
   return (
@@ -15,9 +22,15 @@ const Home = () => {
       <section className="home-featured-products">
         <h2>Featured Products</h2>
         <div className="featured-products-list">
-          <div className="product-card">Product 1</div>
-          <div className="product-card">Product 2</div>
-          <div className="product-card">Product 3</div>
+          {featured.map((product) => product && (
+            <div className="featured-product-card" key={product.id}>
+              <img src={product.image} alt={product.name} className="featured-product-image" />
+              <div className="featured-product-info">
+                <h3 className="featured-product-name">{product.name}</h3>
+                <p className="featured-product-price">${product.price.toFixed(2)}</p>
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 

@@ -54,9 +54,10 @@
 }
 
 .featured-products-list {
-    display: flex;
-    justify-content: center;
-    gap: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
 }
 
 .product-card {
@@ -100,4 +101,109 @@
 
 .about-link:hover {
     color: var(--primary-color);
+}
+
+.featured-products-carousel {
+  width: 100vw;
+  max-width: 700px;
+  margin: 0 auto 2rem auto;
+  box-sizing: border-box;
+}
+
+.featured-products-carousel .slick-list,
+.featured-products-carousel .slick-track,
+.featured-products-carousel .slick-slide > div {
+  width: 100% !important;
+  display: flex !important;
+  justify-content: center;
+  align-items: stretch;
+  box-sizing: border-box;
+}
+
+.featured-product-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--tertiary-color);
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  padding: 1.2rem 1.5rem 1.5rem 1.5rem;
+  width: 100%;
+  max-width: 320px;
+  min-width: 220px;
+  height: 370px;
+  box-sizing: border-box;
+  justify-content: flex-start;
+}
+
+.featured-product-image {
+  width: 100%;
+  max-width: 200px;
+  height: 180px;
+  object-fit: contain;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  margin-bottom: 1.2rem;
+  display: block;
+}
+
+.featured-product-info {
+  text-align: center;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.featured-product-name {
+  font-size: 1.18rem;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 0.5rem;
+}
+
+.featured-product-price {
+  font-size: 1.08rem;
+  color: var(--primary-color);
+  font-weight: 500;
+}
+
+.slick-dots li button:before {
+  color: var(--primary-color);
+  font-size: 12px;
+}
+
+.slick-arrow {
+  z-index: 2;
+}
+
+@media (max-width: 1100px) {
+  .featured-products-list {
+    gap: 1rem;
+  }
+  .featured-product-card {
+    max-width: 30vw;
+    min-width: 180px;
+    height: 320px;
+  }
+}
+
+@media (max-width: 700px) {
+  .featured-products-list {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .featured-product-card {
+    max-width: 98vw;
+    min-width: unset;
+    height: 260px;
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+  .featured-product-image {
+    max-width: 120px;
+    height: 100px;
+  }
 }
