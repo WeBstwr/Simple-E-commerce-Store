@@ -1,0 +1,82 @@
+.sign-up-form {
+    max-width: 400px;
+    margin: 3rem auto;
+    background: var(--tertiary-color);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0, 112, 243, 0.08);
+    padding: 2.5rem 2rem 2rem 2rem;
+}
+
+.sign-up-form h2 {
+    text-align: center;
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.sign-up-email-password {
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+    margin-bottom: 1.5rem;
+}
+
+.sign-up-email-password input,
+.sign-up-email-password .form-error,
+.sign-up-email-password .formik-field {
+    font-size: 1.1rem;
+}
+
+.sign-up-email-password input,
+.sign-up-email-password .formik-field {
+    padding: 0.9rem 1.1rem;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    outline: none;
+    background: #fff;
+    transition: border 0.2s;
+    font-family: inherit;
+}
+
+.sign-up-email-password input:focus,
+.sign-up-email-password .formik-field:focus {
+    border-color: var(--primary-color);
+}
+
+.form-error {
+    color: var(--secondary-color);
+    font-size: 1rem;
+    margin-top: -0.7rem;
+    margin-bottom: 0.3rem;
+    min-height: 1.2em;
+}
+
+.sign-up-submit-btn {
+    display: flex;
+    justify-content: center;
+}
+
+.sign-up-submit-btn button {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.9rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 8px rgba(0, 112, 243, 0.08);
+}
+
+.sign-up-submit-btn button:hover {
+    background: var(--secondary-color);
+}
+
+@media (max-width: 600px) {
+    .sign-up-form {
+        max-width: 98vw;
+        padding: 1.2rem 0.5rem 1rem 0.5rem;
+    }
+}

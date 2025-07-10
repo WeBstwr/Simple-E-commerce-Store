@@ -5,8 +5,16 @@ import Header from './components/Header/Header.jsx'
 import Footer from './components/Footer/Footer.jsx'
 import About from './pages/About/About.jsx'
 import Shop from './pages/Shop/Shop.jsx'
+import Register from './components/Authentication/Register/Register.jsx'
+import RegisterAdmin from './components/Authentication/RegisterAdmin/RegisterAdmin.jsx'
+import toast from "react-simple-toasts";
+import "react-simple-toasts/dist/theme/dark.css";
+import React from 'react';
 
 function App() {
+  // To use a toast anywhere in your app:
+  // import toast from "react-simple-toasts";
+  // toast("Your message", { theme: "green" | "dark", type: "success" | "error" | "info", duration: 4000 });
 
   return (
     <>
@@ -17,6 +25,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/shop" element={<Shop />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/register-admin" element={<RegisterAdmin />} />
           </Routes>
           <Footer />
         </div>

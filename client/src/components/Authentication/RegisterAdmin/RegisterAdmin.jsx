@@ -4,11 +4,11 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import useAuthStore from "../../../store/auth";
 import toast from "react-simple-toasts";
 import "react-simple-toasts/dist/theme/dark.css";
-import "./register.css";
+import "../Register/register.css";
 
-const Register = () => {
+const RegisterAdmin = () => {
   const navigate = useNavigate();
-  const registerUser = useAuthStore((state) => state.registerUser);
+  const registerAdmin = useAuthStore((state) => state.registerAdmin);
 
   const initialValues = {
     fullName: "",
@@ -30,6 +30,8 @@ const Register = () => {
       errors.email = "Email is required";
     } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
       errors.email = "Invalid email address";
+    } else if (!values.email.endsWith("@wbt.com")) {
+      errors.email = "Admin email must end with @wbt.com";
     }
     if (!values.password) {
       errors.password = "Password is required";
@@ -46,27 +48,23 @@ const Register = () => {
 
   const onSubmit = async (values, { setSubmitting, setErrors }) => {
     try {
-      await registerUser(
+      await registerAdmin(
         {
           fullName: values.fullName,
           phoneNumber: values.phoneNumber,
           email: values.email,
           password: values.password,
-          role: "user",
+          role: "admin",
         },
         navigate
       );
-      toast("Registered successfully", {
-        theme: "green",
+      toast("Admin registered successfully", {
+        theme: "dark",
         type: "success",
-        duration: 2000
       });
-      setTimeout(() => {
-        navigate("/login");
-      }, 1200);
     } catch (err) {
       setErrors({ submit: "Registration failed" });
-      toast("Registration failed", { theme: "dark", type: "error", duration: 2000 });
+      toast("Registration failed", { theme: "dark", type: "error" });
     } finally {
       setSubmitting(false);
     }
@@ -81,14 +79,14 @@ const Register = () => {
       >
         {({ isSubmitting, errors }) => (
           <Form>
-            <h2>Sign Up</h2>
+            <h2>Admin Sign Up</h2>
             {errors.submit && <p>{errors.submit}</p>}
             <div className="sign-up-email-password">
               <Field type="text" name="fullName" placeholder="Full Name" />
               <ErrorMessage name="fullName" component="div" className="form-error" />
               <Field type="tel" name="phoneNumber" placeholder="Phone Number" />
               <ErrorMessage name="phoneNumber" component="div" className="form-error" />
-              <Field type="email" name="email" placeholder="Email" />
+              <Field type="email" name="email" placeholder="Admin Email (@wbt.com)" />
               <ErrorMessage name="email" component="div" className="form-error" />
               <Field type="password" name="password" placeholder="Password" />
               <ErrorMessage name="password" component="div" className="form-error" />
@@ -97,7 +95,7 @@ const Register = () => {
             </div>
             <div className="sign-up-submit-btn">
               <button type="submit" disabled={isSubmitting}>
-                {isSubmitting ? "Registering..." : "Sign Up"}
+                {isSubmitting ? "Registering..." : "Sign Up as Admin"}
               </button>
             </div>
           </Form>
@@ -107,4 +105,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default RegisterAdmin; 
