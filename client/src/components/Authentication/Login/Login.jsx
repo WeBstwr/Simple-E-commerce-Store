@@ -28,7 +28,7 @@ const Login = () => {
         toast("Welcome back!", { theme: "green", type: "success", duration: 2000 });
         setTimeout(() => {
           if (role === "admin") {
-            navigate("/admin");
+            navigate("/admin/home");
           } else {
             navigate("/");
           }

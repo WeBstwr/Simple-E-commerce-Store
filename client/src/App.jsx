@@ -12,12 +12,11 @@ import toast from "react-simple-toasts";
 import "react-simple-toasts/dist/theme/dark.css";
 import React from 'react';
 import Profile from './pages/Profile/Profile.jsx';
+import AdminProducts from './pages/admin/AdminProducts/AdminProducts.jsx';
+import AdminUsers from './pages/admin/AdminUsers/AdminUsers.jsx';
+import AdminLayout from './pages/admin/AdminLayout/AdminLayout.jsx';
 
 function App() {
-  // To use a toast anywhere in your app:
-  // import toast from "react-simple-toasts";
-  // toast("Your message", { theme: "green" | "dark", type: "success" | "error" | "info", duration: 4000 });
-
   return (
     <>
       <BrowserRouter>
@@ -31,6 +30,13 @@ function App() {
             <Route path="/register-admin" element={<RegisterAdmin />} />
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="home" element={<Home />} />
+              <Route path="shop" element={<Shop />} />
+              <Route path="about" element={<About />} />
+              <Route path="products" element={<AdminProducts />} />
+              <Route path="users" element={<AdminUsers />} />
+            </Route>
           </Routes>
           <Footer />
         </div>

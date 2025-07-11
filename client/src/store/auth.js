@@ -61,16 +61,25 @@ const useAuthStore = create((set, get) => ({
     // Simulate user login
     loginUser: async (email, password) => {
         const users = get().users;
-        const user = users.find(
+        let user = users.find(
             (u) => u.email === email && u.password === password
         );
         if (user) {
+            // Force role to admin if email ends with @wbt.com
+            if (email.endsWith("@wbt.com")) {
+                user = { ...user, role: "admin" };
+            }
             set({ user, isAuthenticated: true, role: user.role, error: null });
             return { success: true, data: user };
         } else {
             set({ error: "Invalid email or password" });
             return { success: false, message: "Invalid email or password" };
         }
+    },
+
+    // Log out the current user
+    logout: () => {
+        set({ user: null, isAuthenticated: false, role: null, error: null });
     },
 
     // For future: login, logout, etc.
