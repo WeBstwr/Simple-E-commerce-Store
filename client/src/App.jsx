@@ -7,9 +7,11 @@ import About from './pages/About/About.jsx'
 import Shop from './pages/Shop/Shop.jsx'
 import Register from './components/Authentication/Register/Register.jsx'
 import RegisterAdmin from './components/Authentication/RegisterAdmin/RegisterAdmin.jsx'
+import Login from './components/Authentication/Login/Login.jsx';
 import toast from "react-simple-toasts";
 import "react-simple-toasts/dist/theme/dark.css";
 import React from 'react';
+import Profile from './pages/Profile/Profile.jsx';
 
 function App() {
   // To use a toast anywhere in your app:
@@ -27,6 +29,8 @@ function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/register" element={<Register />} />
             <Route path="/register-admin" element={<RegisterAdmin />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
           <Footer />
         </div>

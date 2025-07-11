@@ -1,0 +1,32 @@
+.profile-container {
+    max-width: 400px;
+    margin: 3rem auto;
+    background: var(--tertiary-color);
+    border-radius: 16px;
+    box-shadow: 0 2px 16px rgba(0, 112, 243, 0.08);
+    padding: 2.5rem 2rem 2rem 2rem;
+}
+
+.profile-title {
+    text-align: center;
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    font-family: 'Josefin Sans', sans-serif;
+}
+
+.profile-detail {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+}
+
+.profile-detail span {
+    color: #888;
+}
+
+@media (max-width: 600px) {
+    .profile-container {
+        max-width: 98vw;
+        padding: 1.2rem 0.5rem 1rem 0.5rem;
+    }
+}
