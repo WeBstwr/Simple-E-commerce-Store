@@ -1,0 +1,133 @@
+.cart-container {
+  max-width: 900px;
+  margin: 3rem auto;
+  background: var(--tertiary-color);
+  border-radius: 16px;
+  box-shadow: 0 2px 16px rgba(0, 112, 243, 0.08);
+  padding: 2.5rem 2rem 2rem 2rem;
+}
+
+.cart-title {
+  text-align: center;
+  color: var(--primary-color);
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+.cart-empty {
+  text-align: center;
+  color: #888;
+  font-size: 1.2rem;
+  margin-top: 2rem;
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+}
+
+.cart-table th, .cart-table td {
+  padding: 0.8rem 0.5rem;
+  text-align: left;
+}
+
+.cart-table th {
+  background: #f3f4f6;
+  color: #333;
+  font-weight: 600;
+}
+
+.cart-table tr:not(:last-child) {
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.cart-product-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cart-product-image {
+  width: 54px;
+  height: 54px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+}
+
+.cart-qty-input {
+  width: 60px;
+  padding: 0.4rem 0.6rem;
+  border: 1.5px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.cart-remove-btn {
+  background: var(--secondary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 1.1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.cart-remove-btn:hover {
+  background: #e6005c;
+}
+
+.cart-summary {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1.5rem;
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+}
+
+.cart-total-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.cart-total-value {
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 1.3rem;
+}
+
+.cart-clear-btn {
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.4rem;
+  font-weight: 600;
+  font-size: 1.08rem;
+  cursor: pointer;
+  transition: background 0.18s;
+}
+
+.cart-clear-btn:hover {
+  background: var(--secondary-color);
+}
+
+@media (max-width: 700px) {
+  .cart-container {
+    padding: 1.2rem 0.5rem 1rem 0.5rem;
+  }
+  .cart-table th, .cart-table td {
+    padding: 0.5rem 0.2rem;
+  }
+  .cart-summary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.7rem;
+  }
+} 

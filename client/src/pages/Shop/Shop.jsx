@@ -7,6 +7,8 @@ import useAuthStore from "../../store/auth.js";
 import useProductStore from "../../store/products.js";
 import Modal from "../../components/Modal/Modal.jsx";
 import ProductForm from "../../components/Product/ProductForm.jsx";
+import useCartStore from "../../store/cart.js";
+import { useNavigate } from "react-router-dom";
 
 const categories = ["Apparels", "T-shirts", "Sunglasses"];
 
@@ -22,6 +24,8 @@ const Shop = () => {
   const [editProductId, setEditProductId] = useState(null);
   const { user, isAuthenticated } = useAuthStore();
   const { products, removeProduct, editProduct } = useProductStore();
+  const { addToCart } = useCartStore();
+  const navigate = useNavigate();
 
   const filteredProducts = products.filter(
     (product) => product.category === selectedCategory
@@ -90,6 +94,8 @@ const Shop = () => {
                 </button>
               </>
             )}
+            onAddToCart={() => addToCart(product)}
+            onBuy={() => { addToCart(product); navigate('/cart'); }}
           />
         ))}
       </Masonry>

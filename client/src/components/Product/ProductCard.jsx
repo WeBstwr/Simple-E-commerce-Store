@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProductCard = ({ product, isAdmin = false, adminActions }) => {
+const ProductCard = ({ product, isAdmin = false, adminActions, onAddToCart, onBuy }) => {
   return (
     <div className="product-card">
       <img
@@ -17,8 +17,8 @@ const ProductCard = ({ product, isAdmin = false, adminActions }) => {
           adminActions(product)
         ) : (
           <>
-            <button className="buy-btn">Buy</button>
-            <button className="cart-btn">Add to Cart</button>
+            <button className="buy-btn" onClick={onBuy}>Buy</button>
+            <button className="cart-btn" onClick={onAddToCart}>Add to Cart</button>
           </>
         )}
       </div>

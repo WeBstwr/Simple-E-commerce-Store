@@ -14,6 +14,7 @@ import Profile from './pages/Profile/Profile.jsx';
 import AdminProducts from './pages/admin/AdminProducts/AdminProducts.jsx';
 import AdminUsers from './pages/admin/AdminUsers/AdminUsers.jsx';
 import AdminLayout from './pages/admin/AdminLayout/AdminLayout.jsx';
+import Cart from './pages/Cart/Cart.jsx';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             <Route path="/register-admin" element={<RegisterAdmin />} />
             <Route path="/login" element={<Login />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/cart" element={<Cart />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="home" element={<Home />} />
               <Route path="shop" element={<Shop />} />

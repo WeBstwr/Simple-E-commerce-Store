@@ -1,12 +1,13 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import useAuthStore from '../../store/auth.js'
+import useCartStore from '../../store/cart.js';
 import './header.css'
 
 const Header = () => {
   const { user, isAuthenticated, logout } = useAuthStore();
   const navigate = useNavigate();
-  const cartCount = 0;
+  const cartCount = useCartStore(state => state.cart.reduce((sum, item) => sum + item.quantity, 0));
 
   // Not logged in: minimal header
   if (!isAuthenticated) {
@@ -36,6 +37,10 @@ const Header = () => {
             <Link to="/admin/about" className="nav-link">About</Link>
             <Link to="/admin/products" className="nav-link">Manage Products</Link>
             <Link to="/admin/users" className="nav-link">Manage Users</Link>
+            <Link to="/cart" className="nav-link cart-link">
+              <span role="img" aria-label="cart">🛒</span>
+              {cartCount > 0 && <span className="cart-badge">{cartCount}</span>}
+            </Link>
           </div>
           <div className="nav-right">
             <button
