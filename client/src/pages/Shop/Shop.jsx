@@ -2,6 +2,11 @@ import React, { useState } from "react";
 import Masonry from "react-masonry-css";
 import products from "../../data/products";
 import "./shop.css";
+import ProductCard from "../../components/Product/ProductCard.jsx";
+import useAuthStore from "../../store/auth.js";
+import useProductStore from "../../store/products.js";
+import Modal from "../../components/Modal/Modal.jsx";
+import ProductForm from "../../components/Product/ProductForm.jsx";
 
 const categories = ["Apparels", "T-shirts", "Sunglasses"];
 
@@ -14,10 +19,15 @@ const breakpointColumnsObj = {
 
 const Shop = () => {
   const [selectedCategory, setSelectedCategory] = useState(categories[0]);
+  const [editProductId, setEditProductId] = useState(null);
+  const { user, isAuthenticated } = useAuthStore();
+  const { products, removeProduct, editProduct } = useProductStore();
 
   const filteredProducts = products.filter(
     (product) => product.category === selectedCategory
   );
+
+  const editingProduct = products.find(p => p.id === editProductId);
 
   return (
     <div className="shop-container">
@@ -39,23 +49,74 @@ const Shop = () => {
         columnClassName="my-masonry-grid_column"
       >
         {filteredProducts.map((product) => (
-          <div className="product-card" key={product.id}>
-            <img
-              src={product.image}
-              alt={product.name}
-              className="product-image"
-            />
-            <div className="product-info">
-              <h2 className="product-name">{product.name}</h2>
-              <p className="product-price">${product.price.toFixed(2)}</p>
-            </div>
-            <div className="product-actions">
-              <button className="buy-btn">Buy</button>
-              <button className="cart-btn">Add to Cart</button>
-            </div>
-          </div>
+          <ProductCard
+            key={product.id}
+            product={product}
+            isAdmin={isAuthenticated && user?.role === 'admin'}
+            adminActions={() => (
+              <>
+                <button
+                  style={{
+                    background: 'var(--primary-color)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '0.5rem 1.2rem',
+                    fontWeight: 600,
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    transition: 'background 0.18s',
+                    marginRight: '0.5rem',
+                  }}
+                  onClick={() => setEditProductId(product.id)}
+                >
+                  Edit
+                </button>
+                <button
+                  style={{
+                    background: 'var(--secondary-color)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '0.5rem 1.2rem',
+                    fontWeight: 600,
+                    fontSize: '1rem',
+                    cursor: 'pointer',
+                    transition: 'background 0.18s',
+                  }}
+                  onClick={() => removeProduct(product.id)}
+                >
+                  Delete
+                </button>
+              </>
+            )}
+          />
         ))}
       </Masonry>
+      <Modal isOpen={!!editProductId} onClose={() => setEditProductId(null)}>
+        {editingProduct && (
+          <ProductForm
+            initialValues={{
+              name: editingProduct.name,
+              image: editingProduct.image,
+              price: editingProduct.price,
+              category: editingProduct.category,
+            }}
+            submitLabel="Update Product"
+            onSubmit={(values, { setSubmitting }) => {
+              editProduct(editProductId, {
+                name: values.name,
+                image: values.image,
+                price: parseFloat(values.price),
+                category: values.category,
+              });
+              setSubmitting(false);
+              setEditProductId(null);
+            }}
+            onCancel={() => setEditProductId(null)}
+          />
+        )}
+      </Modal>
     </div>
   );
 };

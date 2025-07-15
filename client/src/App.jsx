@@ -8,7 +8,6 @@ import Shop from './pages/Shop/Shop.jsx'
 import Register from './components/Authentication/Register/Register.jsx'
 import RegisterAdmin from './components/Authentication/RegisterAdmin/RegisterAdmin.jsx'
 import Login from './components/Authentication/Login/Login.jsx';
-import toast from "react-simple-toasts";
 import "react-simple-toasts/dist/theme/dark.css";
 import React from 'react';
 import Profile from './pages/Profile/Profile.jsx';
