@@ -82,6 +82,32 @@ const useAuthStore = create((set, get) => ({
         set({ user: null, isAuthenticated: false, role: null, error: null });
     },
 
+    // Remove a user by email (except current user)
+    removeUser: (email) => {
+        const currentUser = get().user;
+        if (currentUser && currentUser.email === email) return; // Prevent self-delete
+        set((state) => ({
+            users: state.users.filter((u) => u.email !== email)
+        }));
+    },
+
+    // Add a user (admin only, no navigation)
+    addUser: (userData) => {
+        set((state) => {
+            // Prevent duplicate emails
+            if (state.users.some(u => u.email === userData.email)) {
+                return { error: 'Email already exists' };
+            }
+            return {
+                error: null,
+                users: [
+                    ...state.users,
+                    { ...userData }
+                ]
+            };
+        });
+    },
+
     // For future: login, logout, etc.
 }));
 

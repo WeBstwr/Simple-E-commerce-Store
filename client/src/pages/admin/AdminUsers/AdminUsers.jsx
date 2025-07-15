@@ -1,9 +1,49 @@
 import React from 'react';
 import useAuthStore from '../../../store/auth.js';
 import './adminUsers.css';
+import Modal from '../../../components/Modal/Modal.jsx';
+import { useState } from 'react';
 
 const AdminUsers = () => {
-    const { user, isAuthenticated, users } = useAuthStore();
+    const { user, isAuthenticated, users, removeUser, addUser, error } = useAuthStore();
+    const [showAddModal, setShowAddModal] = useState(false);
+    const [addError, setAddError] = useState("");
+    const [editUserEmail, setEditUserEmail] = useState(null);
+    const [editError, setEditError] = useState("");
+
+    const editingUser = users.find(u => u.email === editUserEmail);
+
+    const handleAddUser = (values, { setSubmitting, resetForm }) => {
+        addUser(values);
+        if (error) {
+            setAddError(error);
+        } else {
+            setShowAddModal(false);
+            setAddError("");
+            resetForm();
+        }
+        setSubmitting(false);
+    };
+
+    const handleEditUser = (values, { setSubmitting, resetForm }) => {
+        // Prevent changing email to an existing one (other than self)
+        if (users.some(u => u.email === values.email && u.email !== editingUser.email)) {
+            setEditError('Email already exists');
+            setSubmitting(false);
+            return;
+        }
+        // Update user in Zustand
+        const updatedUsers = users.map(u =>
+            u.email === editingUser.email
+                ? { ...u, ...values }
+                : u
+        );
+        useAuthStore.setState({ users: updatedUsers, error: null });
+        setEditUserEmail(null);
+        setEditError("");
+        resetForm();
+        setSubmitting(false);
+    };
 
     if (!isAuthenticated || user?.role !== 'admin') {
         return <div style={{ textAlign: 'center', marginTop: '2rem' }}>You are not authorized to view this page.</div>;
@@ -13,8 +53,200 @@ const AdminUsers = () => {
         <div className="admin-users-container">
             <h2 className="admin-users-title">Manage Users</h2>
             <p className="admin-users-desc">(Admin-only) Here you can view all users and delete them from the site.</p>
-            {/* User management UI will go here */}
-            <div className="admin-users-placeholder">User management coming soon...</div>
+            <button
+                style={{
+                    background: 'var(--primary-color)',
+                    color: '#fff',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '0.6rem 1.4rem',
+                    fontWeight: 600,
+                    fontSize: '1.08rem',
+                    cursor: 'pointer',
+                    marginBottom: '1.2rem',
+                    transition: 'background 0.18s',
+                }}
+                onClick={() => setShowAddModal(true)}
+            >
+                Add User
+            </button>
+            {users.length === 0 ? (
+                <div className="admin-users-placeholder">No users found.</div>
+            ) : (
+                <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '1.5rem' }}>
+                    <thead>
+                        <tr style={{ background: 'var(--tertiary-color)' }}>
+                            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Full Name</th>
+                            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Email</th>
+                            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Role</th>
+                            <th style={{ textAlign: 'left', padding: '0.5rem' }}>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {users.map((u) => (
+                            <tr key={u.email} style={{ borderBottom: '1px solid #e0e0e0' }}>
+                                <td style={{ padding: '0.5rem' }}>{u.fullName}</td>
+                                <td style={{ padding: '0.5rem' }}>{u.email}</td>
+                                <td style={{ padding: '0.5rem' }}>{u.role}</td>
+                                <td style={{ padding: '0.5rem' }}>
+                                    {user.email !== u.email && (
+                                        <>
+                                            <button
+                                                style={{
+                                                    background: 'var(--primary-color)',
+                                                    color: '#fff',
+                                                    border: 'none',
+                                                    borderRadius: '8px',
+                                                    padding: '0.4rem 1.1rem',
+                                                    fontWeight: 600,
+                                                    fontSize: '1rem',
+                                                    cursor: 'pointer',
+                                                    transition: 'background 0.18s',
+                                                    marginRight: '0.5rem',
+                                                }}
+                                                onClick={() => setEditUserEmail(u.email)}
+                                            >
+                                                Edit
+                                            </button>
+                                            <button
+                                                style={{
+                                                    background: 'var(--secondary-color)',
+                                                    color: '#fff',
+                                                    border: 'none',
+                                                    borderRadius: '8px',
+                                                    padding: '0.4rem 1.1rem',
+                                                    fontWeight: 600,
+                                                    fontSize: '1rem',
+                                                    cursor: 'pointer',
+                                                    transition: 'background 0.18s',
+                                                }}
+                                                onClick={() => removeUser(u.email)}
+                                            >
+                                                Delete
+                                            </button>
+                                        </>
+                                    )}
+                                    {user.email === u.email && (
+                                        <span style={{ color: '#888', fontSize: '0.98rem' }}>(You)</span>
+                                    )}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            )}
+            <Modal isOpen={showAddModal} onClose={() => { setShowAddModal(false); setAddError(""); }}>
+                <h3 style={{ textAlign: 'center', marginBottom: '1rem', color: 'var(--primary-color)' }}>Add New User</h3>
+                <form
+                    className="admin-add-product-form"
+                    onSubmit={e => { e.preventDefault(); }}
+                >
+                    <div className="form-group">
+                        <label htmlFor="fullName">Full Name</label>
+                        <input type="text" name="fullName" className="form-control" id="fullName" required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="email">Email</label>
+                        <input type="email" name="email" className="form-control" id="email" required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="password">Password</label>
+                        <input type="password" name="password" className="form-control" id="password" required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="role">Role</label>
+                        <select name="role" className="form-control" id="role" defaultValue="user" required>
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
+                    {addError && <div className="form-error" style={{ marginTop: '0.5rem' }}>{addError}</div>}
+                    <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                        <button
+                            type="submit"
+                            className="admin-add-btn"
+                            onClick={e => {
+                                e.preventDefault();
+                                const form = e.target.form;
+                                const values = {
+                                    fullName: form.fullName.value,
+                                    email: form.email.value,
+                                    password: form.password.value,
+                                    role: form.role.value,
+                                };
+                                handleAddUser({ ...values }, { setSubmitting: () => {}, resetForm: () => { form.reset(); } });
+                            }}
+                        >
+                            Add User
+                        </button>
+                        <button
+                            type="button"
+                            className="admin-add-btn"
+                            style={{ background: 'var(--secondary-color)' }}
+                            onClick={() => { setShowAddModal(false); setAddError(""); }}
+                        >
+                            Cancel
+                        </button>
+                    </div>
+                </form>
+            </Modal>
+            <Modal isOpen={!!editUserEmail} onClose={() => { setEditUserEmail(null); setEditError(""); }}>
+                <h3 style={{ textAlign: 'center', marginBottom: '1rem', color: 'var(--primary-color)' }}>Edit User</h3>
+                {editingUser && (
+                    <form
+                        className="admin-add-product-form"
+                        onSubmit={e => { e.preventDefault(); }}
+                    >
+                        <div className="form-group">
+                            <label htmlFor="fullName">Full Name</label>
+                            <input type="text" name="fullName" className="form-control" id="editFullName" defaultValue={editingUser.fullName} required />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="email">Email</label>
+                            <input type="email" name="email" className="form-control" id="editEmail" defaultValue={editingUser.email} required />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="password">Password</label>
+                            <input type="password" name="password" className="form-control" id="editPassword" defaultValue={editingUser.password} required />
+                        </div>
+                        <div className="form-group">
+                            <label htmlFor="role">Role</label>
+                            <select name="role" className="form-control" id="editRole" defaultValue={editingUser.role} required>
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+                        {editError && <div className="form-error" style={{ marginTop: '0.5rem' }}>{editError}</div>}
+                        <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem' }}>
+                            <button
+                                type="submit"
+                                className="admin-add-btn"
+                                onClick={e => {
+                                    e.preventDefault();
+                                    const form = e.target.form;
+                                    const values = {
+                                        fullName: form.editFullName.value,
+                                        email: form.editEmail.value,
+                                        password: form.editPassword.value,
+                                        role: form.editRole.value,
+                                    };
+                                    handleEditUser(values, { setSubmitting: () => {}, resetForm: () => { form.reset(); } });
+                                }}
+                            >
+                                Update User
+                            </button>
+                            <button
+                                type="button"
+                                className="admin-add-btn"
+                                style={{ background: 'var(--secondary-color)' }}
+                                onClick={() => { setEditUserEmail(null); setEditError(""); }}
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                )}
+            </Modal>
         </div>
     );
 };
