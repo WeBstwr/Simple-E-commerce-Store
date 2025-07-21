@@ -4,6 +4,7 @@ import { config } from "dotenv";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.js";
 import productRoutes from "./routes/products.js";
+import cartRoutes from "./routes/cart.js";
 
 config();
 
@@ -23,6 +24,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/cart", cartRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the server");
