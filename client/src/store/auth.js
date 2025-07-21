@@ -176,6 +176,77 @@ const useAuthStore = create((set, get) => ({
             set({ user: null, isAuthenticated: false, role: null });
         }
     },
+
+    // Admin: fetch all users
+    fetchAllUsers: async () => {
+        try {
+            const res = await fetch(`${API_URL}/users`, {
+                method: "GET",
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                set({ users: data.users });
+            }
+        } catch {
+            set({ users: [] });
+        }
+    },
+
+    // Admin: update any user
+    updateUser: async (id, userData) => {
+        try {
+            const res = await fetch(`${API_URL}/users/${id}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify(userData)
+            });
+            const data = await res.json();
+            if (data.success) {
+                set((state) => ({
+                    users: state.users.map(u => u.id === data.user.id ? data.user : u)
+                }));
+            }
+        } catch {}
+    },
+
+    // Admin: delete any user
+    deleteUser: async (id) => {
+        try {
+            const res = await fetch(`${API_URL}/users/${id}`, {
+                method: "DELETE",
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                set((state) => ({
+                    users: state.users.filter(u => u.id !== id)
+                }));
+            }
+        } catch {}
+    },
+
+    // Admin: add user (register)
+    addUser: async (userData) => {
+        set({ error: null });
+        try {
+            const res = await fetch(`${API_URL}/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(userData),
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                await get().fetchAllUsers();
+            } else {
+                set({ error: data.message || "Registration failed" });
+            }
+        } catch (err) {
+            set({ error: "Registration failed" });
+        }
+    },
 }));
 
 export default useAuthStore; 

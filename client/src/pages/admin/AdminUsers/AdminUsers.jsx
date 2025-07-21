@@ -1,20 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import useAuthStore from '../../../store/auth.js';
 import './adminUsers.css';
 import Modal from '../../../components/Modal/Modal.jsx';
-import { useState } from 'react';
 
 const AdminUsers = () => {
-    const { user, isAuthenticated, users, removeUser, addUser, error } = useAuthStore();
+    const { user, isAuthenticated, users = [], fetchAllUsers, addUser, updateUser, deleteUser, error } = useAuthStore();
     const [showAddModal, setShowAddModal] = useState(false);
     const [addError, setAddError] = useState("");
-    const [editUserEmail, setEditUserEmail] = useState(null);
+    const [editUserId, setEditUserId] = useState(null);
     const [editError, setEditError] = useState("");
 
-    const editingUser = users.find(u => u.email === editUserEmail);
+    useEffect(() => {
+        if (isAuthenticated && user?.role === 'admin') {
+            fetchAllUsers();
+        }
+    }, [isAuthenticated, user, fetchAllUsers]);
 
-    const handleAddUser = (values, { setSubmitting, resetForm }) => {
-        addUser(values);
+    const editingUser = users.find(u => u.id === editUserId);
+
+    const handleAddUser = async (values, { setSubmitting, resetForm }) => {
+        await addUser(values);
         if (error) {
             setAddError(error);
         } else {
@@ -25,24 +30,24 @@ const AdminUsers = () => {
         setSubmitting(false);
     };
 
-    const handleEditUser = (values, { setSubmitting, resetForm }) => {
+    const handleEditUser = async (values, { setSubmitting, resetForm }) => {
         // Prevent changing email to an existing one (other than self)
-        if (users.some(u => u.email === values.email && u.email !== editingUser.email)) {
+        if (users.some(u => u.email === values.email && u.id !== editingUser.id)) {
             setEditError('Email already exists');
             setSubmitting(false);
             return;
         }
-        // Update user in Zustand
-        const updatedUsers = users.map(u =>
-            u.email === editingUser.email
-                ? { ...u, ...values }
-                : u
-        );
-        useAuthStore.setState({ users: updatedUsers, error: null });
-        setEditUserEmail(null);
+        await updateUser(editingUser.id, values);
+        setEditUserId(null);
         setEditError("");
         resetForm();
         setSubmitting(false);
+    };
+
+    const handleDeleteUser = async (id) => {
+        if (window.confirm('Are you sure you want to delete this user?')) {
+            await deleteUser(id);
+        }
     };
 
     if (!isAuthenticated || user?.role !== 'admin') {
@@ -84,12 +89,12 @@ const AdminUsers = () => {
                     </thead>
                     <tbody>
                         {users.map((u) => (
-                            <tr key={u.email} style={{ borderBottom: '1px solid #e0e0e0' }}>
+                            <tr key={u.id} style={{ borderBottom: '1px solid #e0e0e0' }}>
                                 <td style={{ padding: '0.5rem' }}>{u.fullName}</td>
                                 <td style={{ padding: '0.5rem' }}>{u.email}</td>
                                 <td style={{ padding: '0.5rem' }}>{u.role}</td>
                                 <td style={{ padding: '0.5rem' }}>
-                                    {user.email !== u.email && (
+                                    {user.id !== u.id && (
                                         <>
                                             <button
                                                 style={{
@@ -104,7 +109,7 @@ const AdminUsers = () => {
                                                     transition: 'background 0.18s',
                                                     marginRight: '0.5rem',
                                                 }}
-                                                onClick={() => setEditUserEmail(u.email)}
+                                                onClick={() => setEditUserId(u.id)}
                                             >
                                                 Edit
                                             </button>
@@ -120,13 +125,13 @@ const AdminUsers = () => {
                                                     cursor: 'pointer',
                                                     transition: 'background 0.18s',
                                                 }}
-                                                onClick={() => removeUser(u.email)}
+                                                onClick={() => handleDeleteUser(u.id)}
                                             >
                                                 Delete
                                             </button>
                                         </>
                                     )}
-                                    {user.email === u.email && (
+                                    {user.id === u.id && (
                                         <span style={{ color: '#888', fontSize: '0.98rem' }}>(You)</span>
                                     )}
                                 </td>
@@ -144,6 +149,10 @@ const AdminUsers = () => {
                     <div className="form-group">
                         <label htmlFor="fullName">Full Name</label>
                         <input type="text" name="fullName" className="form-control" id="fullName" required />
+                    </div>
+                    <div className="form-group">
+                        <label htmlFor="phoneNumber">Phone Number</label>
+                        <input type="tel" name="phoneNumber" className="form-control" id="phoneNumber" required />
                     </div>
                     <div className="form-group">
                         <label htmlFor="email">Email</label>
@@ -165,16 +174,17 @@ const AdminUsers = () => {
                         <button
                             type="submit"
                             className="admin-add-btn"
-                            onClick={e => {
+                            onClick={async e => {
                                 e.preventDefault();
                                 const form = e.target.form;
                                 const values = {
                                     fullName: form.fullName.value,
+                                    phoneNumber: form.phoneNumber.value,
                                     email: form.email.value,
                                     password: form.password.value,
                                     role: form.role.value,
                                 };
-                                handleAddUser({ ...values }, { setSubmitting: () => {}, resetForm: () => { form.reset(); } });
+                                await handleAddUser({ ...values }, { setSubmitting: () => {}, resetForm: () => { form.reset(); } });
                             }}
                         >
                             Add User
@@ -190,7 +200,7 @@ const AdminUsers = () => {
                     </div>
                 </form>
             </Modal>
-            <Modal isOpen={!!editUserEmail} onClose={() => { setEditUserEmail(null); setEditError(""); }}>
+            <Modal isOpen={!!editUserId} onClose={() => { setEditUserId(null); setEditError(""); }}>
                 <h3 style={{ textAlign: 'center', marginBottom: '1rem', color: 'var(--primary-color)' }}>Edit User</h3>
                 {editingUser && (
                     <form
@@ -202,8 +212,12 @@ const AdminUsers = () => {
                             <input type="text" name="fullName" className="form-control" id="editFullName" defaultValue={editingUser.fullName} required />
                         </div>
                         <div className="form-group">
+                            <label htmlFor="phoneNumber">Phone Number</label>
+                            <input type="tel" name="phoneNumber" className="form-control" id="editPhoneNumber" defaultValue={editingUser.phoneNumber} required />
+                        </div>
+                        <div className="form-group">
                             <label htmlFor="email">Email</label>
-                            <input type="email" name="email" className="form-control" id="editEmail" defaultValue={editingUser.email} required />
+                            <input type="email" name="email" className="form-control" id="editEmail" defaultValue={editingUser.email} required readOnly />
                         </div>
                         <div className="form-group">
                             <label htmlFor="password">Password</label>
@@ -221,16 +235,17 @@ const AdminUsers = () => {
                             <button
                                 type="submit"
                                 className="admin-add-btn"
-                                onClick={e => {
+                                onClick={async e => {
                                     e.preventDefault();
                                     const form = e.target.form;
                                     const values = {
                                         fullName: form.editFullName.value,
+                                        phoneNumber: form.editPhoneNumber.value,
                                         email: form.editEmail.value,
                                         password: form.editPassword.value,
                                         role: form.editRole.value,
                                     };
-                                    handleEditUser(values, { setSubmitting: () => {}, resetForm: () => { form.reset(); } });
+                                    await handleEditUser(values, { setSubmitting: () => {}, resetForm: () => { form.reset(); } });
                                 }}
                             >
                                 Update User
@@ -239,7 +254,7 @@ const AdminUsers = () => {
                                 type="button"
                                 className="admin-add-btn"
                                 style={{ background: 'var(--secondary-color)' }}
-                                onClick={() => { setEditUserEmail(null); setEditError(""); }}
+                                onClick={() => { setEditUserId(null); setEditError(""); }}
                             >
                                 Cancel
                             </button>

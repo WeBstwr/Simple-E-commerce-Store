@@ -30,8 +30,8 @@ const AdminProducts = () => {
 
     return (
         <div className="admin-products-container">
-            <h2 className="admin-products-title">Manage Products</h2>
-            <p className="admin-products-desc">(Admin-only) Here you can add new products (clothes) to be sold.</p>
+            <h2 className="admin-products-title">Add Product</h2>
+            <p className="admin-products-desc">(Admin-only) Use this form to add new products to the store.</p>
             <ProductForm
                 initialValues={{ name: '', image: '', price: '', category: categories[0] }}
                 onSubmit={handleAddProduct}
