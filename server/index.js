@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.js";
 import productRoutes from "./routes/products.js";
 import cartRoutes from "./routes/cart.js";
+import path from "path";
+import uploadRoutes from "./routes/upload.js";
 
 config();
 
@@ -21,10 +23,14 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// Serve uploaded images statically
+app.use("/uploads", express.static(path.join(process.cwd(), "server/uploads")));
+
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
+app.use("/api/upload", uploadRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome to the server");

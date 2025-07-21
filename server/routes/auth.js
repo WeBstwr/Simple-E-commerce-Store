@@ -8,7 +8,8 @@ import {
   changePassword,
   deleteProfile,
   updateUser,
-  deleteUser
+  deleteUser,
+  logout
 } from "../controllers/authController.js";
 import { authenticate, requireAdmin } from "../middlewares/auth.js";
 
@@ -16,6 +17,7 @@ const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
+router.post("/logout", logout);
 
 // Profile management
 router.get("/profile", authenticate, getProfile);

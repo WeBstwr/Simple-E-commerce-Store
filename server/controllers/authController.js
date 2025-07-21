@@ -205,4 +205,8 @@ export const deleteUser = async (req, res) => {
     console.error("Error deleting user:", e);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
+};
+
+export const logout = (req, res) => {
+    res.clearCookie("access_token").json({ success: true, message: "Logged out" });
 }; 

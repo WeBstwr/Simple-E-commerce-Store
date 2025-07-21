@@ -43,6 +43,114 @@
     background: var(--primary-color);
 }
 
+.profile-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.profile-edit-btn {
+    background: var(--primary-color);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.9rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 8px rgba(0, 112, 243, 0.08);
+}
+
+.profile-edit-btn:hover {
+    background: var(--secondary-color);
+}
+
+.profile-delete-btn {
+    background: #e74c3c;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.9rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.08);
+}
+
+.profile-delete-btn:hover {
+    background: #c0392b;
+}
+
+.profile-edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-top: 1.5rem;
+}
+
+.profile-edit-form label {
+    font-size: 1.1rem;
+    color: var(--primary-color);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.profile-edit-form input {
+    padding: 0.7rem 1rem;
+    border: 1.5px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    outline: none;
+    background: #fff;
+    font-family: inherit;
+    transition: border 0.2s;
+}
+
+.profile-edit-form input:focus {
+    border-color: var(--primary-color);
+}
+
+.profile-edit-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.profile-error {
+    color: var(--secondary-color);
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
+.profile-cancel-btn {
+    background: #888;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.9rem 2.2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.18s, box-shadow 0.18s;
+    box-shadow: 0 2px 8px rgba(136, 136, 136, 0.08);
+}
+
+.profile-cancel-btn:hover {
+    background: #555;
+}
+
+.profile-success {
+    color: #27ae60;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    text-align: center;
+}
+
 @media (max-width: 600px) {
     .profile-container {
         max-width: 98vw;

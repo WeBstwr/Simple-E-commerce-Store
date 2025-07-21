@@ -1,114 +1,158 @@
 import { create } from 'zustand';
 
+const API_URL = "http://localhost:3000/api/auth";
+
 const useAuthStore = create((set, get) => ({
     user: null,
     isAuthenticated: false,
     role: null,
     error: null,
-    users: [
-        {
-            email: "user@example.com",
-            password: "password123",
-            fullName: "Demo User",
-            role: "user"
-        },
-        {
-            email: "admin@example.com",
-            password: "adminpass",
-            fullName: "Admin User",
-            role: "admin"
-        }
-    ],
 
-    // Simulate user registration
+    // Register user with backend
     registerUser: async (userData, navigate) => {
-        set((state) => ({
-            error: null,
-            users: [
-                ...state.users,
-                { ...userData, role: 'user' }
-            ]
-        }));
-        setTimeout(() => {
-            set({
-                user: { ...userData, role: 'user' },
-                isAuthenticated: false,
-                role: 'user',
+        set({ error: null });
+        try {
+            const res = await fetch(`${API_URL}/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...userData, role: "user" }),
+                credentials: "include"
             });
-            navigate('/login');
-        }, 800);
-    },
-
-    // Simulate admin registration
-    registerAdmin: async (userData, navigate) => {
-        set((state) => ({
-            error: null,
-            users: [
-                ...state.users,
-                { ...userData, role: 'admin' }
-            ]
-        }));
-        setTimeout(() => {
-            set({
-                user: { ...userData, role: 'admin' },
-                isAuthenticated: false,
-                role: 'admin',
-            });
-            navigate('/login');
-        }, 800);
-    },
-
-    // Simulate user login
-    loginUser: async (email, password) => {
-        const users = get().users;
-        let user = users.find(
-            (u) => u.email === email && u.password === password
-        );
-        if (user) {
-            // Force role to admin if email ends with @wbt.com
-            if (email.endsWith("@wbt.com")) {
-                user = { ...user, role: "admin" };
+            const data = await res.json();
+            if (data.success) {
+                navigate('/login');
+            } else {
+                set({ error: data.message || "Registration failed" });
             }
-            set({ user, isAuthenticated: true, role: user.role, error: null });
-            return { success: true, data: user };
-        } else {
-            set({ error: "Invalid email or password" });
-            return { success: false, message: "Invalid email or password" };
+        } catch (err) {
+            set({ error: "Registration failed" });
         }
     },
 
-    // Log out the current user
-    logout: () => {
+    // Register admin with backend
+    registerAdmin: async (userData, navigate) => {
+        set({ error: null });
+        try {
+            const res = await fetch(`${API_URL}/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...userData, role: "admin" }),
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                navigate('/login');
+            } else {
+                set({ error: data.message || "Registration failed" });
+            }
+        } catch (err) {
+            set({ error: "Registration failed" });
+        }
+    },
+
+    // Login user with backend
+    loginUser: async (email, password) => {
+        set({ error: null });
+        try {
+            const res = await fetch(`${API_URL}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                set({
+                    user: data.data,
+                    isAuthenticated: true,
+                    role: data.data.role,
+                    error: null
+                });
+                return { success: true, data: data.data };
+            } else {
+                set({ error: data.message || "Login failed" });
+                return { success: false, message: data.message || "Login failed" };
+            }
+        } catch (err) {
+            set({ error: "Login failed" });
+            return { success: false, message: "Login failed" };
+        }
+    },
+
+    // Log out the current user (clear state and cookie)
+    logout: async () => {
+        await fetch("http://localhost:3000/api/auth/logout", {
+            method: "POST",
+            credentials: "include"
+        });
         set({ user: null, isAuthenticated: false, role: null, error: null });
     },
 
-    // Remove a user by email (except current user)
-    removeUser: (email) => {
-        const currentUser = get().user;
-        if (currentUser && currentUser.email === email) return; // Prevent self-delete
-        set((state) => ({
-            users: state.users.filter((u) => u.email !== email)
-        }));
-    },
-
-    // Add a user (admin only, no navigation)
-    addUser: (userData) => {
-        set((state) => {
-            // Prevent duplicate emails
-            if (state.users.some(u => u.email === userData.email)) {
-                return { error: 'Email already exists' };
+    // Update profile
+    updateProfile: async (profileData) => {
+        try {
+            const res = await fetch("http://localhost:3000/api/auth/profile", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify(profileData)
+            });
+            const data = await res.json();
+            if (data.success) {
+                set({ user: data.user });
+                return { success: true };
+            } else {
+                set({ error: data.message || "Update failed" });
+                return { success: false, message: data.message || "Update failed" };
             }
-            return {
-                error: null,
-                users: [
-                    ...state.users,
-                    { ...userData }
-                ]
-            };
-        });
+        } catch {
+            set({ error: "Update failed" });
+            return { success: false, message: "Update failed" };
+        }
     },
 
-    // For future: login, logout, etc.
+    // Delete profile
+    deleteProfile: async () => {
+        try {
+            const res = await fetch("http://localhost:3000/api/auth/profile", {
+                method: "DELETE",
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success) {
+                await get().logout();
+                return { success: true };
+            } else {
+                set({ error: data.message || "Delete failed" });
+                return { success: false, message: data.message || "Delete failed" };
+            }
+        } catch {
+            set({ error: "Delete failed" });
+            return { success: false, message: "Delete failed" };
+        }
+    },
+
+    // Change password
+    changePassword: async (oldPassword, newPassword) => {
+        try {
+            const res = await fetch("http://localhost:3000/api/auth/profile/password", {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ oldPassword, newPassword })
+            });
+            const data = await res.json();
+            if (data.success) {
+                return { success: true };
+            } else {
+                set({ error: data.message || "Password change failed" });
+                return { success: false, message: data.message || "Password change failed" };
+            }
+        } catch {
+            set({ error: "Password change failed" });
+            return { success: false, message: "Password change failed" };
+        }
+    },
 }));
 
 export default useAuthStore; 
