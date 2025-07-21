@@ -1,6 +1,15 @@
 import express from "express";
-import { register, login } from "../controllers/authController.js";
-import { getAllUsers } from "../controllers/authController.js";
+import {
+  register,
+  login,
+  getAllUsers,
+  getProfile,
+  updateProfile,
+  changePassword,
+  deleteProfile,
+  updateUser,
+  deleteUser
+} from "../controllers/authController.js";
 import { authenticate, requireAdmin } from "../middlewares/auth.js";
 
 const router = express.Router();
@@ -8,17 +17,20 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/login", login);
 
-// Add protected profile route
-router.get("/profile", authenticate, (req, res) => {
-    res.json({ success: true, user: req.user });
-});
+// Profile management
+router.get("/profile", authenticate, getProfile);
+router.put("/profile", authenticate, updateProfile);
+router.put("/profile/password", authenticate, changePassword);
+router.delete("/profile", authenticate, deleteProfile);
 
-// Add admin-only test route
+// Admin-only test route
 router.get("/admin-test", authenticate, requireAdmin, (req, res) => {
     res.json({ success: true, message: "You are an admin!" });
 });
 
-// Add admin-only route to get all users
+// Admin user management
 router.get("/users", authenticate, requireAdmin, getAllUsers);
+router.put("/users/:id", authenticate, requireAdmin, updateUser);
+router.delete("/users/:id", authenticate, requireAdmin, deleteUser);
 
 export default router; 
