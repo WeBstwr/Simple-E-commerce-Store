@@ -1,14 +1,17 @@
-import React from 'react'
-import products from '../../data/products';
-import './home.css'
-
-const featured = [
-  products.find(p => p.category === "Apparels"),
-  products.find(p => p.category === "T-shirts"),
-  products.find(p => p.category === "Sunglasses")
-];
+import React, { useEffect } from 'react';
+import useProductStore from '../../store/products.js';
+import './home.css';
 
 const Home = () => {
+  const { products, fetchProducts } = useProductStore();
+
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
+
+  // Use the first product as the featured product
+  const featured = products.length > 0 ? [products[0]] : [];
+
   return (
     <main className="home-container">
       {/* Hero Section */}
@@ -24,7 +27,13 @@ const Home = () => {
         <div className="featured-products-list">
           {featured.map((product) => product && (
             <div className="featured-product-card" key={product.id}>
-              <img src={product.image} alt={product.name} className="featured-product-image" />
+              <img
+                src={product.image.startsWith('/uploads/')
+                  ? `http://localhost:3000${product.image}`
+                  : product.image}
+                alt={product.name}
+                className="featured-product-image"
+              />
               <div className="featured-product-info">
                 <h3 className="featured-product-name">{product.name}</h3>
                 <p className="featured-product-price">${product.price.toFixed(2)}</p>
@@ -41,7 +50,7 @@ const Home = () => {
         <a href="/about" className="about-link">Learn More</a>
       </section>
     </main>
-  )
-}
+  );
+};
 
-export default Home
+export default Home;

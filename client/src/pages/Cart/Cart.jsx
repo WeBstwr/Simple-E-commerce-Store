@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import useCartStore from '../../store/cart.js';
 import './cart.css';
 
 const Cart = () => {
-  const { cart, removeFromCart, updateQuantity, clearCart } = useCartStore();
+  const { cart, removeFromCart, updateQuantity, clearCart, fetchCart } = useCartStore();
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   const total = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 

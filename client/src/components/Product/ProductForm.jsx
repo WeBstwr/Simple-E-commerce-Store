@@ -2,7 +2,13 @@ import React, { useRef, useState } from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import '../../pages/admin/AdminProducts/adminProducts.css';
 
-const categories = ["Apparels", "T-shirts", "Sunglasses"];
+// Use backend enum values for categories
+const categories = ["Apparels", "T_shirts", "Sunglasses"];
+const categoryLabels = {
+  Apparels: "Apparels",
+  T_shirts: "T-shirts",
+  Sunglasses: "Sunglasses"
+};
 
 const ProductForm = ({ initialValues, onSubmit, submitLabel, onCancel }) => {
   const fileInputRef = useRef();
@@ -50,7 +56,16 @@ const ProductForm = ({ initialValues, onSubmit, submitLabel, onCancel }) => {
         if (!values.category) errors.category = 'Category is required';
         return errors;
       }}
-      onSubmit={onSubmit}
+      onSubmit={async (values, formikHelpers) => {
+        await onSubmit(values, {
+          ...formikHelpers,
+          resetForm: (...args) => {
+            formikHelpers.resetForm(...args);
+            setPreview("");
+            setFileName("");
+          }
+        });
+      }}
       enableReinitialize
     >
       {({ isSubmitting, setFieldValue, setFieldTouched, values }) => (
@@ -97,7 +112,7 @@ const ProductForm = ({ initialValues, onSubmit, submitLabel, onCancel }) => {
             <label htmlFor="category">Category</label>
             <Field as="select" name="category" className="form-control">
               {categories.map(cat => (
-                <option value={cat} key={cat}>{cat}</option>
+                <option value={cat} key={cat}>{categoryLabels[cat]}</option>
               ))}
             </Field>
             <ErrorMessage name="category" component="div" className="form-error" />

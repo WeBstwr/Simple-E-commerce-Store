@@ -1,44 +1,85 @@
 import { create } from 'zustand';
 
+const API_URL = 'http://localhost:3000/api/cart';
+
 const useCartStore = create((set, get) => ({
-  cart: [], // [{ product, quantity }]
+  cart: [], // [{ id, product, quantity }]
 
-  addToCart: (product) => {
-    set((state) => {
-      const existing = state.cart.find(item => item.product.id === product.id);
-      if (existing) {
-        return {
-          cart: state.cart.map(item =>
-            item.product.id === product.id
-              ? { ...item, quantity: item.quantity + 1 }
-              : item
-          )
-        };
-      } else {
-        return {
-          cart: [...state.cart, { product, quantity: 1 }]
-        };
+  // Fetch cart from backend
+  fetchCart: async () => {
+    try {
+      const res = await fetch(API_URL, { credentials: 'include' });
+      const data = await res.json();
+      if (data.success) {
+        set({ cart: data.cartItems });
       }
-    });
+    } catch {}
   },
 
-  removeFromCart: (productId) => {
-    set((state) => ({
-      cart: state.cart.filter(item => item.product.id !== productId)
-    }));
+  // Add to cart via backend
+  addToCart: async (product) => {
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ productId: product.id, quantity: 1 })
+      });
+      const data = await res.json();
+      if (data.success) {
+        // Refetch cart to sync
+        await get().fetchCart();
+      }
+    } catch {}
   },
 
-  updateQuantity: (productId, quantity) => {
-    set((state) => ({
-      cart: state.cart.map(item =>
-        item.product.id === productId
-          ? { ...item, quantity }
-          : item
-      )
-    }));
+  // Update quantity via backend
+  updateQuantity: async (productId, quantity) => {
+    const cartItem = get().cart.find(item => item.product.id === productId);
+    if (!cartItem) return;
+    try {
+      const res = await fetch(`${API_URL}/${cartItem.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({ quantity })
+      });
+      const data = await res.json();
+      if (data.success) {
+        await get().fetchCart();
+      }
+    } catch {}
   },
 
-  clearCart: () => set({ cart: [] }),
+  // Remove from cart via backend
+  removeFromCart: async (productId) => {
+    const cartItem = get().cart.find(item => item.product.id === productId);
+    if (!cartItem) return;
+    try {
+      const res = await fetch(`${API_URL}/${cartItem.id}`, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (data.success) {
+        await get().fetchCart();
+      }
+    } catch {}
+  },
+
+  // Clear cart via backend
+  clearCart: async () => {
+    try {
+      const res = await fetch(API_URL, {
+        method: 'DELETE',
+        credentials: 'include'
+      });
+      const data = await res.json();
+      if (data.success) {
+        set({ cart: [] });
+      }
+    } catch {}
+  },
 }));
 
 export default useCartStore; 

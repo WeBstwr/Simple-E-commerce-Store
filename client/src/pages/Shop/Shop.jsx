@@ -10,7 +10,13 @@ import ProductForm from "../../components/Product/ProductForm.jsx";
 import useCartStore from "../../store/cart.js";
 import { useNavigate } from "react-router-dom";
 
-const categories = ["Apparels", "T-shirts", "Sunglasses"];
+// Use backend enum values for categories
+const categories = ["Apparels", "T_shirts", "Sunglasses"];
+const categoryLabels = {
+  Apparels: "Apparels",
+  T_shirts: "T-shirts",
+  Sunglasses: "Sunglasses"
+};
 
 const breakpointColumnsObj = {
   default: 4,
@@ -27,6 +33,7 @@ const Shop = () => {
   const { addToCart } = useCartStore();
   const navigate = useNavigate();
 
+  // Filter by backend enum value
   const filteredProducts = products.filter(
     (product) => product.category === selectedCategory
   );
@@ -43,7 +50,7 @@ const Shop = () => {
             className={`category-btn${selectedCategory === cat ? " active" : ""}`}
             onClick={() => setSelectedCategory(cat)}
           >
-            {cat}
+            {categoryLabels[cat]}
           </button>
         ))}
       </div>
