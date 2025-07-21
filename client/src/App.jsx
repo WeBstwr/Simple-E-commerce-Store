@@ -9,14 +9,24 @@ import Register from './components/Authentication/Register/Register.jsx'
 import RegisterAdmin from './components/Authentication/RegisterAdmin/RegisterAdmin.jsx'
 import Login from './components/Authentication/Login/Login.jsx';
 import "react-simple-toasts/dist/theme/dark.css";
-import React from 'react';
+import React, { useEffect } from 'react';
 import Profile from './pages/Profile/Profile.jsx';
 import AdminProducts from './pages/admin/AdminProducts/AdminProducts.jsx';
 import AdminUsers from './pages/admin/AdminUsers/AdminUsers.jsx';
 import AdminLayout from './pages/admin/AdminLayout/AdminLayout.jsx';
 import Cart from './pages/Cart/Cart.jsx';
+import useAuthStore from './store/auth.js';
+import useProductStore from './store/products.js';
 
 function App() {
+  const checkAuth = useAuthStore(state => state.checkAuth);
+  const fetchProducts = useProductStore(state => state.fetchProducts);
+
+  useEffect(() => {
+    checkAuth();
+    fetchProducts();
+  }, []);
+
   return (
     <>
       <BrowserRouter>

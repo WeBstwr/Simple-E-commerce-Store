@@ -153,6 +153,29 @@ const useAuthStore = create((set, get) => ({
             return { success: false, message: "Password change failed" };
         }
     },
+
+    // Check current user from backend (for persistence)
+    checkAuth: async () => {
+        try {
+            const res = await fetch(`${API_URL}/profile`, {
+                method: "GET",
+                credentials: "include"
+            });
+            const data = await res.json();
+            if (data.success && data.user) {
+                set({
+                    user: data.user,
+                    isAuthenticated: true,
+                    role: data.user.role,
+                    error: null
+                });
+            } else {
+                set({ user: null, isAuthenticated: false, role: null });
+            }
+        } catch {
+            set({ user: null, isAuthenticated: false, role: null });
+        }
+    },
 }));
 
 export default useAuthStore; 

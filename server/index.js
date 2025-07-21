@@ -6,9 +6,13 @@ import authRoutes from "./routes/auth.js";
 import productRoutes from "./routes/products.js";
 import cartRoutes from "./routes/cart.js";
 import path from "path";
+import { fileURLToPath } from "url";
 import uploadRoutes from "./routes/upload.js";
 
 config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
@@ -23,8 +27,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// Serve uploaded images statically
-app.use("/uploads", express.static(path.join(process.cwd(), "server/uploads")));
+// Serve uploaded images statically (robust path)
+app.use("/uploads", express.static(path.resolve(__dirname, "uploads")));
 
 // Routes
 app.use("/api/auth", authRoutes);

@@ -1,10 +1,15 @@
 import React from "react";
 
 const ProductCard = ({ product, isAdmin = false, adminActions, onAddToCart, onBuy }) => {
+  // Ensure correct image URL for uploaded images
+  const imageUrl = product.image && product.image.startsWith('/uploads/')
+    ? `http://localhost:3000${product.image}`
+    : product.image;
+
   return (
     <div className="product-card">
       <img
-        src={product.image}
+        src={imageUrl}
         alt={product.name}
         className="product-image"
       />
