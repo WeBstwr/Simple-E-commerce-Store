@@ -97,7 +97,6 @@ This project is for educational purposes as part of the CodeAlpha internship.
 
 ## 🙏 Credits
 - Built by Webster Ifedha
-- CodeAlpha Internship
 
 ---
 
